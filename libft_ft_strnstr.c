@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 size_t	is_needle(char *haystack, char *needle, size_t idx, size_t len)
 {

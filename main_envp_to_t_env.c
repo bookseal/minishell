@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 t_env	*envp_to_t_env(char	*envp[])
 {

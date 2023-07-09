@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 // void	special_token_to_pipex(t_pipex *p, t_token	**token)
 // {

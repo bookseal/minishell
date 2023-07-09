@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 static void	free_all(char **strs, size_t *idx_strs)
 {

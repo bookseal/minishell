@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {

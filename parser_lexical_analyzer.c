@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 void	init_lexical(t_lexical *l, char *input, t_env *env_head)
 {

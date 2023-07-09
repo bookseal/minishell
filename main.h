@@ -5,6 +5,7 @@
 #include <termios.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
 
 typedef struct s_env
 {
@@ -54,7 +55,7 @@ t_pipex	*syntax_analyzer(t_token	*tokens, t_env *env_head);
 t_token	*lexical_analyzer(char *input, t_env *env_head);
 
 // parser
-t_pipex *parser(char *input, char *envp[]);
+t_pipex *parser(char *input, t_env *env);
 
 // envs
 t_env	*envp_to_t_env(char	*envp[]);

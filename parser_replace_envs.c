@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 char	*replace_envs(char *start, t_env *env_head)
 {

@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 static int	is_set(char *set, char c)
 {

@@ -1,4 +1,4 @@
-#include "../main.h"
+#include "main.h"
 
 char	*ft_strjoin(char *s1, char *s2, char sep)
 {
