@@ -7,6 +7,15 @@
 #include <readline/history.h>
 #include <signal.h>
 
+typedef enum {
+    NO_REDIRECT = 0,
+	PIPE, // '|'
+    REDIRECT_IN,  // '<'
+	HEREDOC, // '<<'
+    REDIRECT_OUT,  // '>'
+    APPEND_OUT,  // '>>'
+} tags;
+
 typedef struct s_env
 {
 	char	*key;
@@ -16,14 +25,15 @@ typedef struct s_env
 
 typedef struct s_cmd
 {
-	bool	builtin;
+	char	*builtin;
 	char	*path;
 	char	**argv;
 }			t_cmd;
 
 typedef struct s_pipex
 {
-	char	*file[2];
+	char	*infile;
+	char	*outfile;
 	t_cmd	*cmd;
 	t_env	*env;
 	struct s_pipex	*next;
@@ -34,7 +44,7 @@ typedef struct s_token
 	char	*value;
 	bool	single_quotes;
 	bool	double_quotes;
-	char	*special;
+	tags	tag;
 	struct s_token	*next;
 } t_token;
 
@@ -44,7 +54,7 @@ typedef struct s_lexical
 	bool	in_double_quotes;	
 	bool	single_quotes;
 	bool	double_quotes;
-	char	*special;
+	tags	tag;
 	char	*start;
 	t_env	*env_head;
 } t_lexical;

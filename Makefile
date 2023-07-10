@@ -25,7 +25,7 @@ HEADERS = main.h
 all: $(NAME)
 
 $(NAME): $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(NAME) $(READLINE_LIB) -g
+	$(CC) $(CFLAGS) $(SRCS) $(READLINE_LIB) $(READLINE_INC) -o $(NAME) -g
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(READLINE_INC) -c $< -o $@

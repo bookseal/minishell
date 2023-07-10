@@ -6,7 +6,7 @@ void	init_lexical(t_lexical *l, char *input, t_env *env_head)
 	l->in_double_quotes = false;
 	l->single_quotes = false;
 	l->double_quotes = false;
-	l->special = 0;
+	l->tag = 0;
 	l->start = input;
 	l->env_head = env_head;
 }
@@ -50,19 +50,19 @@ bool is_space(char *input, t_lexical *l)
 
 bool is_special(char *input, t_lexical *l)
 {
-	const char	*tags[10] = {"|", "<<", ">>", "<", ">", 0};
-	int					idx;
+	const char	*tags[7] = {"", "|", "<", "<<", ">", ">>", 0};
+	int			idx;
 
-	idx = 0;
+	idx = 1;
 	while (tags[idx])
+	{
+		if (ft_strncmp(input, tags[idx], ft_strlen(tags[idx])) == 0)
 		{
-			if (ft_strncmp(input, tags[idx], ft_strlen(tags[idx])) == 0)
-			{
-				l->special = ft_strdup(tags[idx]);
-				return (true);
-			}
-			idx++;			
+			l->tag = idx;
+			return (true);
 		}
+		idx++;
+	}
 	return (false);
 }
 
@@ -73,7 +73,7 @@ t_token	*token_new(char **input, t_lexical *l)
 	token = ft_calloc(1, sizeof(t_token));
 	token->single_quotes = l->single_quotes;
 	token->double_quotes = l->double_quotes;
-	token->special = l->special;
+	token->tag = l->tag;
 	**input = 0;
 	token->value = ft_strdup(l->start);
 	if (!l->single_quotes)
@@ -93,24 +93,21 @@ t_token	*token_new_special(char **input, t_lexical *l)
 	token = ft_calloc(1, sizeof(t_token));
 	token->single_quotes = l->single_quotes;
 	token->double_quotes = l->double_quotes;
-	token->special = l->special;
-	token->value = ft_strdup(l->special);
-	l->start = l->start + ft_strlen(l->special);
-	if (ft_strlen(l->special) == 2)
-		*input += 1;
-	l->special = 0;
+	token->tag = l->tag;
+	l->start++;
+	if (l->tag == HEREDOC || l->tag == APPEND_OUT)
+	{
+		(*input)++;
+		l->start++;
+	}
+	l->tag = 0;
 	return (token);
-}
-
-bool is_heredoc(char *input, t_lexical *l)
-{
-	return (false);
 }
 
 t_token *lexical_analyzer(char *input, t_env *env_head)
 {
-	t_token *token_head;
-	t_token *token;
+	t_token		*token_head;
+	t_token		*token;
 	t_lexical	l;
 
 	init_lexical(&l, input, env_head);
@@ -130,10 +127,6 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 			token->next = token_new(&input, &l);
 			token = token->next;
 		}
-		else if (is_heredoc(input, &l))
-		{
-			;
-		}
 		else if (is_special(input, &l))
 		{
 			if (input != l.start)
@@ -144,7 +137,7 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 			token->next = token_new_special(&input, &l);
 			token = token->next;
 		}
-		input++;	
+		input++;
 	}
 	if (l.in_single_quotes || l.in_double_quotes)
 		exit(1);
