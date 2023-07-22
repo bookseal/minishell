@@ -7,19 +7,22 @@ void	init_lexical(t_lexical *l, char *input, t_env *env_head)
 	l->single_quotes = false;
 	l->double_quotes = false;
 	l->tag = 0;
-	l->start = input;
+	l->input_c = input;
 	l->env_head = env_head;
 }
 
 bool	is_token_when_quotes(char *input, t_lexical *l)
 {
+	// input is not both of them
 	if (*input != '\'' && *input != '\"')
 		return (false);
+	// single quote
 	if (*input == '\'')
 	{
 		l->in_single_quotes = !l->in_single_quotes;
 		l->single_quotes = true;
 	}
+	// double quote
 	else if (*input == '\"')
 	{
 		l->in_double_quotes = !l->in_double_quotes;
@@ -27,7 +30,7 @@ bool	is_token_when_quotes(char *input, t_lexical *l)
 	}
 	if (l->in_single_quotes || l->in_double_quotes)
 	{
-		l->start = input + 1;
+		l->input_c = input + 1;
 		return (false);
 	}
 	else
@@ -40,16 +43,17 @@ bool is_space(char *input, t_lexical *l)
 		return (false);
 	if (l->in_single_quotes || l->in_double_quotes)
 		return (false);
-	if (input - l->start <= 1)
+	if (input - l->input_c <= 1)
 	{
-		l->start++;
+		l->input_c++;
 		return (false);
 	}
 	return (true);
 }
 
-bool is_special(char *input, t_lexical *l)
+bool is_tag(char *input, t_lexical *l)
 {
+	// FIXME: tags to enum
 	const char	*tags[7] = {"", "|", "<", "<<", ">", ">>", 0};
 	int			idx;
 
@@ -68,22 +72,22 @@ bool is_special(char *input, t_lexical *l)
 
 t_token	*token_new(char **input, t_lexical *l)
 {
-	t_token	*token;
+	t_token	*t;
 	
-	token = ft_calloc(1, sizeof(t_token));
-	token->single_quotes = l->single_quotes;
-	token->double_quotes = l->double_quotes;
-	token->tag = l->tag;
+	t = ft_calloc(1, sizeof(t_token));
+	t->single_quotes = l->single_quotes;
+	t->double_quotes = l->double_quotes;
+	t->tag = l->tag;
 	**input = 0;
-	token->value = ft_strdup(l->start);
+	t->value = ft_strdup(l->input_c);
 	if (!l->single_quotes)
-		token->value = replace_envs(token->value, l->env_head);
+		t->value = replace_envs(t->value, l->env_head);
 	if (!l->single_quotes || !l->double_quotes)
-		token->value = ft_strtrim(token->value, " ");
+		t->value = ft_strtrim(t->value, " ");
 	l->single_quotes = false;
 	l->double_quotes = false;
-	l->start = *input + 1;
-	return (token);
+	l->input_c = *input + 1;
+	return (t);
 }
 
 t_token	*token_new_special(char **input, t_lexical *l)
@@ -94,11 +98,11 @@ t_token	*token_new_special(char **input, t_lexical *l)
 	token->single_quotes = l->single_quotes;
 	token->double_quotes = l->double_quotes;
 	token->tag = l->tag;
-	l->start++;
+	l->input_c++;
 	if (l->tag == HEREDOC || l->tag == APPEND_OUT)
 	{
 		(*input)++;
-		l->start++;
+		l->input_c++;
 	}
 	l->tag = 0;
 	return (token);
@@ -115,21 +119,24 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 	t = t_head;
 	while (*input != 0)
 	{
+		// quotes
 		if (is_token_when_quotes(input, &l))
 		{
 			t->next = token_new(&input, &l);
 			t = t->next;
-			if ((*(l.start) == ' ' || *(l.start) == '\t') && l.start++ && input++)
+			if ((*(l.input_c) == ' ' || *(l.input_c) == '\t') && l.input_c++ && input++)
 				;
 		}
+		// space
 		else if (is_space(input, &l))
 		{
 			t->next = token_new(&input, &l);
 			t = t->next;
 		}
-		else if (is_special(input, &l))
+		// tag 
+		else if (is_tag(input, &l))
 		{
-			if (input != l.start)
+			if (input != l.input_c)
 			{
 				t->next = token_new(&input, &l);
 				t = t->next;
@@ -139,9 +146,11 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 		}
 		input++;
 	}
+	// not finish quotes
 	if (l.in_single_quotes || l.in_double_quotes)
 		exit(1);
-	if (l.start != input)
+	// rest of input
+	if (l.input_c != input)
 		t->next = token_new(&input, &l);
 	return (t_head);
 }

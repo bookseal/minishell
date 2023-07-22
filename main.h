@@ -55,7 +55,7 @@ typedef struct s_lexical
 	bool	single_quotes;
 	bool	double_quotes;
 	tags	tag;
-	char	*start;
+	char	*input_c;
 	t_env	*env_head;
 } t_lexical;
 
