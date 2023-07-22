@@ -106,42 +106,42 @@ t_token	*token_new_special(char **input, t_lexical *l)
 
 t_token *lexical_analyzer(char *input, t_env *env_head)
 {
-	t_token		*token_head;
-	t_token		*token;
+	t_token		*t_head;
+	t_token		*t;
 	t_lexical	l;
 
 	init_lexical(&l, input, env_head);
-	token_head = ft_calloc(1, sizeof(t_token));
-	token = token_head;
+	t_head = ft_calloc(1, sizeof(t_token));
+	t = t_head;
 	while (*input != 0)
 	{
 		if (is_token_when_quotes(input, &l))
 		{
-			token->next = token_new(&input, &l);
-			token = token->next;
+			t->next = token_new(&input, &l);
+			t = t->next;
 			if ((*(l.start) == ' ' || *(l.start) == '\t') && l.start++ && input++)
 				;
 		}
 		else if (is_space(input, &l))
 		{
-			token->next = token_new(&input, &l);
-			token = token->next;
+			t->next = token_new(&input, &l);
+			t = t->next;
 		}
 		else if (is_special(input, &l))
 		{
 			if (input != l.start)
 			{
-				token->next = token_new(&input, &l);
-				token = token->next;
+				t->next = token_new(&input, &l);
+				t = t->next;
 			}
-			token->next = token_new_special(&input, &l);
-			token = token->next;
+			t->next = token_new_special(&input, &l);
+			t = t->next;
 		}
 		input++;
 	}
 	if (l.in_single_quotes || l.in_double_quotes)
 		exit(1);
 	if (l.start != input)
-		token->next = token_new(&input, &l);
-	return (token_head);
+		t->next = token_new(&input, &l);
+	return (t_head);
 }

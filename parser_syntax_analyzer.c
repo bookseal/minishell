@@ -93,7 +93,7 @@ void	token_to_redirection(t_pipex *p, t_token *token_head)
 	}
 }
 
-bool single_command(t_pipex *p, t_token *token_head, t_env *env_head)
+bool is_single_command(t_pipex *p, t_token *token_head, t_env *env_head)
 {
 	t_token	*token;
 
@@ -120,7 +120,7 @@ t_pipex	*syntax_analyzer(t_token	*token_head, t_env *env)
 	token = token_head->next;
 	p_head = ft_calloc(1, sizeof(t_pipex));
 	p_head->next = ft_calloc(1, sizeof(t_pipex));
-	if (single_command(p_head->next, token_head, env))
+	if (is_single_command(p_head->next, token_head, env))
 		return (p_head);
 	// TODO: else single_command
 	return (p_head);

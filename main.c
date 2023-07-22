@@ -40,7 +40,7 @@ int main(int argc, char *argv[], char *envp[]) {
 		if (*input != '\0' && !is_whitespace(input))
 		{
 			p_head = parser(input, env);
-			executor(p_head);
+			// executor(p_head);
 		}
 		free(input);
 		// TODO: handle $?
