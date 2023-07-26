@@ -75,6 +75,7 @@ char	*replace_envs(char *start, t_env *env_head);
 int 		executor(t_pipex *p_head);
 
 // signal
+void set_signals(void)
 void check_signal(void);
 
 // libft

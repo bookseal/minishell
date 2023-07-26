@@ -27,3 +27,15 @@ void check_signal(void)
 	signal(SIGTERM, signal_handler);
 
 }
+
+void set_signals(void)
+{
+	struct termios term;
+
+	if (!tcgetattr(0, &term))
+		perror("tcgetattr");
+	term.c_lflag &= -ECHOCTL;
+	if (!tcsetattr(0, 0, &term))
+		perror("tcsetattr");
+	check_signal();
+}

@@ -19,11 +19,7 @@ int main(int argc, char *argv[], char *envp[]) {
 	struct termios	term;
 	t_env			*env;
 
-	// ^c no print
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~(ECHOCTL);
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-	check_signal();
+	set_signals();
 	env = envp_to_t_env(envp);
 	while (true)
 	{
