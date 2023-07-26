@@ -34,6 +34,7 @@ typedef struct s_pipex
 {
 	char	*infile;
 	char	*outfile;
+	bool	is_outfile_append;
 	t_cmd	*cmd;
 	t_env	*env;
 	struct s_pipex	*next;
@@ -59,10 +60,12 @@ typedef struct s_lexical
 	t_env	*env_head;
 } t_lexical;
 
-t_pipex	*syntax_analyzer(t_token	*tokens, t_env *env_head);
 
+t_pipex	*syntax_analyzer(t_token	*tokens, t_env *env_head);
+int	token_to_redirection(t_pipex *p, t_token **t);
+int	heredoc(t_pipex *p, t_token **t);
 // lexical_analyzer
-t_token	*lexical_analyzer(char *input, t_env *env_head);
+	t_token	*lexical_analyzer(char *input, t_env *env_head);
 
 // parser
 t_pipex *parser(char *input, t_env *env);

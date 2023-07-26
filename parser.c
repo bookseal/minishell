@@ -6,10 +6,12 @@ t_pipex *parser(char *input, t_env *env)
 	t_token *token_head;
 
 	token_head = lexical_analyzer(input, env);
-	return (0);
-	// p_head = syntax_analyzer(token_head, env);
+	if (!token_head)
+		return (0);
+	p_head = syntax_analyzer(token_head, env);
+	if (!p_head)
+		return (0);
 	// p_head->env = env;
-
 	// free(token_head);
 	// return (p_head);
 }

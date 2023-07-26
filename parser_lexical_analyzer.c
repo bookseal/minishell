@@ -1,6 +1,6 @@
 #include "main.h"
 
-void	init_lexical(t_lexical *l, char *input, t_env *env_head)
+t_token *init_lexical(t_lexical *l, char *input, t_env *env_head)
 {
 	l->in_single_quotes = false;
 	l->in_double_quotes = false;
@@ -9,6 +9,7 @@ void	init_lexical(t_lexical *l, char *input, t_env *env_head)
 	l->tag = 0;
 	l->input_c = input;
 	l->env_head = env_head;
+	return (ft_calloc(1, sizeof(t_token)));
 }
 
 bool	is_token_when_quotes(char *input, t_lexical *l)
@@ -53,7 +54,6 @@ bool is_space(char *input, t_lexical *l)
 
 bool is_tag(char *input, t_lexical *l)
 {
-	// FIXME: tags to enum
 	const char	*tags[7] = {"", "|", "<", "<<", ">", ">>", 0};
 	int			idx;
 
@@ -114,8 +114,7 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 	t_token		*t;
 	t_lexical	l;
 
-	init_lexical(&l, input, env_head);
-	t_head = ft_calloc(1, sizeof(t_token));
+	t_head = init_lexical(&l, input, env_head);
 	t = t_head;
 	while (*input != 0)
 	{
@@ -148,7 +147,7 @@ t_token *lexical_analyzer(char *input, t_env *env_head)
 	}
 	// not finish quotes
 	if (l.in_single_quotes || l.in_double_quotes)
-		exit(1);
+		return (0);
 	// rest of input
 	if (l.input_c != input)
 		t->next = token_new(&input, &l);

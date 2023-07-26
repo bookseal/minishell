@@ -4,9 +4,8 @@ CFLAGS =
 
 READLINE_LIB 	= -lreadline -L/Users/gichlee/.brew/opt/readline/lib
 READLINE_INC	= -I/Users/gichlee/.brew/opt/readline/include
-
 SRCS =	main.c \
-		main_check_signal.c \
+		main_signals.c \
 		main_envp_to_t_env.c \
 		parser.c \
 		parser_lexical_analyzer.c \

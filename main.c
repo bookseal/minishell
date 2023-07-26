@@ -13,34 +13,43 @@ bool	is_whitespace(char *str)
 	return (true);
 }
 
+int setting_before_readline(int argc, char *envp, t_env **env)
+{
+	if (argc > 1)
+	{
+		perror("argument");
+		return (0);
+	}
+	set_signals();
+	*env = envp_to_t_env(envp);
+	return (1);
+}
+
 int main(int argc, char *argv[], char *envp[]) {
 	char			*input;
 	t_pipex			*p_head;
 	struct termios	term;
 	t_env			*env;
 
-	set_signals();
-	env = envp_to_t_env(envp);
-	while (true)
+	if (!setting_before_readline(argc, envp, &env))
+		return (g_exit_status  % 256);
+	while (1)
 	{
 		input = readline("gichlee-0.1$ ");
 		if (!input)
-		{
-			// printf("\033[1A");
-			// printf("\033[10C");
-			printf(" exit\n");
-			exit(-1);
-		}
+			return (g_exit_status  % 256);
 		if (*input != '\0')
 			add_history(input);
 		if (*input != '\0' && !is_whitespace(input))
 		{
 			p_head = parser(input, env);
-			// executor(p_head);
+			if (!p_head)
+				return (g_exit_status  % 256);
+			executor(p_head);
 		}
 		free(input);
 		// TODO: handle $?
 	}
-	// strerror()
+	// TODO: lstclear(env);
 	return (g_exit_status  % 256);
 }

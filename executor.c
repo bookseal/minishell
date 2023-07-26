@@ -29,5 +29,6 @@ int executor(t_pipex *p_head)
 		waitpid(pid, NULL, 0);
 	}
 	free(p_head);
+	// TODO: clear_all()
 	return (0);
 }
