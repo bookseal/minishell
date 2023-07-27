@@ -78,10 +78,12 @@ char	*replace_envs(char *start, t_env *env_head);
 int 		executor(t_pipex *p_head);
 
 // signal
-void set_signals(void)
+void set_signals(void);
 void check_signal(void);
 
 // libft
+t_pipex	*ft_lstlast(t_pipex *lst);
+void	ft_lstadd_back(t_pipex **lst, t_pipex *new);
 char	*ft_strtrim(char *s1, char *set);
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);

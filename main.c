@@ -13,16 +13,16 @@ bool	is_whitespace(char *str)
 	return (true);
 }
 
-int setting_before_readline(int argc, char *envp, t_env **env)
+int setting_before_readline(int argc, char **envp, t_env **env)
 {
 	if (argc > 1)
 	{
 		perror("argument");
-		return (0);
+		return (1);
 	}
 	set_signals();
 	*env = envp_to_t_env(envp);
-	return (1);
+	return (0);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
@@ -31,11 +31,11 @@ int main(int argc, char *argv[], char *envp[]) {
 	struct termios	term;
 	t_env			*env;
 
-	if (!setting_before_readline(argc, envp, &env))
+	if (setting_before_readline(argc, envp, &env))
 		return (g_exit_status  % 256);
 	while (1)
 	{
-		input = readline("gichlee-0.1$ ");
+		input = readline("minishell $ ");
 		if (!input)
 			return (g_exit_status  % 256);
 		if (*input != '\0')

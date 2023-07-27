@@ -13,5 +13,5 @@ t_pipex *parser(char *input, t_env *env)
 		return (0);
 	// p_head->env = env;
 	// free(token_head);
-	// return (p_head);
+	return (p_head);
 }

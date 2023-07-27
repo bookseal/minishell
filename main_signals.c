@@ -35,11 +35,11 @@ void set_signals(void)
 {
 	struct termios term;
 
-	if (!tcgetattr(0, &term))
+	if (tcgetattr(STDIN_FILENO, &term))
 		perror("tcgetattr");
 	// disable echo cntl char;
-	term.c_lflag &= -ECHOCTL;
-	if (!tcsetattr(0, 0, &term))
+	term.c_lflag &= ~(ECHOCTL);
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term))
 		perror("tcsetattr");
 	check_signal();
 }

@@ -1,13 +1,5 @@
 #include "main.h"
 
-t_pipex *init_syntax(void)
-{
-	t_pipex	*p_head;
-
-	p_head = ft_calloc(1, sizeof(t_pipex));
-	return (p_head);
-}
-
 char	**t_env_to_env_path(t_env *env_head)
 {
 	t_env	*env;
@@ -95,22 +87,18 @@ t_pipex	*syntax_analyzer(t_token	*token_head, t_env *env)
 {
 	t_token	*token;
 	t_pipex	*p_head;
-	t_pipex	*p;
 	
-	p_head = init_synax();
 	token = token_head->next;
-	p = p_head->next;
-	p = token_to_pipex(&token, env);
-	if (!p)
+	p_head = ft_calloc(1, sizeof(t_pipex));
+	ft_lstadd_back(&p_head, token_to_pipex(&token, env));
+	if (!ft_lstlast(p_head))
 		return (0);
-	// TODO: next token
 	// while (token || token->tag == PIPE)
 	// {
 	// 	// TODO: pipe_tag();
-	//	p = p->next;
-	//	p = token_to_pipex(token, env);
-	//	if (!p)
-	//		return (0);
+	// 	ft_lstadd_back(&p_head, token_to_pipex(&token, env));
+	// 	if (!ft_lstlast(p_head))
+	// 		return (0);
 	// }
 	// TODO: lstclear_token();
 	return (p_head);
